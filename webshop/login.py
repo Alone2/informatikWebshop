@@ -1,4 +1,4 @@
-import webshop.drinksdatabase
+import drinksdatabase
 
 def register(username, password):
     pass

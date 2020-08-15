@@ -7,7 +7,7 @@ services:
       - "3306:3306"
     container_name: info-mysql
   web:
-    build: .
+    build: ./webshop
     restart: always
     ports:
       - "8080:8080"
@@ -16,3 +16,5 @@ services:
       - db
     links:
       - db
+    volumes:
+      - "./webshop:/usr/src/webshop"

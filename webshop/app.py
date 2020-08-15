@@ -1,5 +1,5 @@
 from flask import Flask
-from webshop import drinksdatabase
+import drinksdatabase
 import time
 import sys
 
