@@ -1,13 +1,28 @@
 from flask_mysqldb import MySQL
 
 class Database:
-    def __init__(self, flaskApp):
-        self.mysql = MySQL()
-        app.config['MYSQL_DATABASE_USER'] = 'root'
-        app.config['MYSQL_DATABASE_PASSWORD'] = '1234'
-        app.config['MYSQL_DATABASE_DB'] = 'drinks'
-        app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-        self.mysql.init_app(app)
+    def __init__(self, flaskApp, isDocker = False):
+        self.mysql = MySQL(flaskApp)
+        self.can_run = False
+        flaskApp.config['MYSQL_USER'] = 'root'
+        flaskApp.config['MYSQL_PASSWORD'] = '1234'
+        flaskApp.config['MYSQL_DB'] = 'WebshopEasy'
+        if isDocker:
+            flaskApp.config['MYSQL_HOST'] = 'db'
+        else:
+            flaskApp.config['MYSQL_HOST'] = 'localhost'
+
+    def begin(self):
+        self.mysql.connection.begin()
+        self.can_run = True
+
+    def commit(self):
+        self.mysql.connection.commit()
+        self.can_run = False
+    
+    def revert(self):
+        self.mysql.connection.revert()
+        self.can_run = False
 
     # returns list of Drinks 
     # TODO: implement search (.. where)
@@ -41,6 +56,8 @@ class Database:
         sql = "SELECT password from user where username=%s"
         cursor.execute(sql, (user,))
         out = cursor.fetchall()
+        if len(out) < 1:
+            return False
         passw = out[0][0]
         # No encryption 'cause we like to live dangerously!
         if password == passw:
@@ -50,12 +67,26 @@ class Database:
 
     # returns nothing
     def create_user(self, user, password):
+        if not self.can_run:
+            raise Exception("Start Database with .begin()")
         cursor = self.mysql.connection.cursor()
         sql = "INSERT into user (username, password) VALUES (%s, %s) "
         cursor.execute(sql, (user,password))
+
+    # returns bool
+    def does_user_exist(self, user):
+        cursor = self.mysql.connection.cursor()
+        sql = "SELECT id from user where username = %s"
+        cursor.execute(sql, (user,))
+        out = cursor.fetchall()
+        if len(out) > 1:
+            return True
+        return False
     
     # returns nothing
     def change_password(self, user, password):
+        if not self.can_run:
+            raise Exception("Start Database with .begin()")
         cursor = self.mysql.connection.cursor()
         sql = "UPDATE user SET password = %s WHERE username = %s"
         cursor.execute(sql, (password,user))
@@ -107,7 +138,7 @@ class Database:
         out = cursor.fetchall()
         images = []
         for k in out:
-            imges.append(out[0][0])
+            images.append(out[0][0])
         return images
 
     # returns orders
@@ -122,17 +153,23 @@ class Database:
         sql = "SELECT itemid, count from item2order where orderId=%s"
         cursor.execute(sql, (orderId,))
         out = cursor.fetchall()
-        orders = []
+        order_items = []
         for k in out:
             drink = self.__get_drink(k[0])
-            orders.append(Order(order_id, drink, k[1], userid))
+            order_items.append(Order_Item(drink,k[1]))
 
-        return orders
+        return Order(orderId, order_items, userid)
 
+    # returns orders
     def get_cart(self, userid):
+        if not self.can_run:
+            raise Exception("Start Database with .begin()")
         return self.__get_orders(userid, True)
 
+    # returns orders
     def get_finished_orders(self, userid):
+        if not self.can_run:
+            raise Exception("Start Database with .begin()")
         return self.__get_orders(userid, False)
 
 class Drink:
@@ -144,14 +181,6 @@ class Drink:
         self.volume = volume
         self.imagesbin = imagesbin
         self.categories = categories
-
-    # returns bin
-    def get_image(self):
-        pass
-    
-    # reteurns categories
-    def get_categories(self):
-        pass 
 
 class Category():
     def __init__(self, myid, name, description):
@@ -169,11 +198,13 @@ class User():
     def get_cart(self):
         pass
 
-class Order():
-    def __init__(self, order_id, item, count, user_id):
-        self.id = order_id
-        self.drink = item
-        self.user_id = user_id
+class Order_Item():
+    def __init__(self, item, count):
         self.amount = count
+        self.drink = item
 
-# TODO : Order =/= Single Item!
+class Order():
+    def __init__(self, order_id, order_item_list, user_id):
+        self.id = order_id
+        self.user_id = user_id
+        self.order_item_list = order_item_list
