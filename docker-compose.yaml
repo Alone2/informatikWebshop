@@ -1,0 +1,18 @@
+version: '3'
+services:
+  db:
+    build: ./database
+    restart: always
+    ports:
+      - "3306:3306"
+    container_name: info-mysql
+  web:
+    build: .
+    restart: always
+    ports:
+      - "8080:8080"
+    container_name: info-webshop
+    depends_on:
+      - db
+    links:
+      - db
