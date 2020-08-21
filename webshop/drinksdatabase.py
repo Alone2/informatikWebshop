@@ -50,25 +50,30 @@ class Database:
             drinks.append(self.__get_drink(out[0][0]))
         return drinks
 
-    # returns True / False
+    # returns User Id, or -1
     def is_password_correct(self, user, password):
         cursor = self.mysql.connection.cursor()
-        sql = "SELECT password from user where username=%s"
+        sql = "SELECT password, id from user where username=%s"
         cursor.execute(sql, (user,))
         out = cursor.fetchall()
         if len(out) < 1:
-            return False
+            return -1
         passw = out[0][0]
+        uid = out[0][1]
         # No encryption 'cause we like to live dangerously!
         if password == passw:
-            return True
+            return uid
         else:
-            return False
+            return -1
 
     # returns nothing
     def create_user(self, user, password):
         if not self.can_run:
             raise Exception("Start Database with .begin()")
+        if len(user) < 3 or len(password) < 3:
+            raise Exception("Username or password too short")
+        if self.does_user_exist(user):
+            raise Exception("User does already exist")
         cursor = self.mysql.connection.cursor()
         sql = "INSERT into user (username, password) VALUES (%s, %s) "
         cursor.execute(sql, (user,password))
@@ -188,15 +193,6 @@ class Category():
         self.name = name
         self.description = description
 
-class User():
-    def __init__(self, id, username):
-        pass
-    
-    def get_orders(self):
-        pass
-
-    def get_cart(self):
-        pass
 
 class Order_Item():
     def __init__(self, item, count):
