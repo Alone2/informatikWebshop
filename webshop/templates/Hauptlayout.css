@@ -1,0 +1,21 @@
+#header {
+    margin: 0px;
+    width: auto;
+    height: 60px;
+    padding: 10px;
+    background-color: grey;
+    font-size: 30px;
+}
+
+#SBar {
+    float: left;
+    width: 150px;
+    min-height: 600px;
+
+    background-color: lightgrey;
+}
+
+#content {
+    float: right;
+    
+}
