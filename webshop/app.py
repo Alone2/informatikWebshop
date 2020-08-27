@@ -20,6 +20,7 @@ def home():
 @app.route("/login", methods=["POST,GET"])
 def login():
     failed = ""
+    logged_in = user.is_logged_in(session)
     if request.method == "POST":
         uname = request.form["username"]
         pswrt = request.form["password"]
@@ -32,6 +33,7 @@ def login():
 @app.route("/register", methods=["POST,GET"])
 def register(): 
     failed = ""
+    logged_in = user.is_logged_in(session)
     if request.method == "POST":
         uname = request.form["username"]
         pswrt = request.form["password"]
@@ -40,30 +42,38 @@ def register():
             db.create_user(uname, pswrt)
         except:
             db.revert()
-            return drinkshtml.generate_loginpage(user.is_logged_in(session), True, failedMessage="Error! Name exist or internal error") 
+            return drinkshtml.generate_loginpage(logged_in, True, failedMessage="Error! Name exist or internal error") 
         db.commit()
         success = user.login(uname, pswrt)
         if success:
             return redirect("/")
         failed = "You registered. Cannot log in: nternal error"
-    return drinkshtml.generate_loginpage(user.is_logged_in(session), True, failedMessage=failed)
+    return drinkshtml.generate_loginpage(logged_in, True, failedMessage=failed)
 
+@app.route("/logout", methods=["POST"])
+def logout():
+    user.logout(session)
+        
 @app.route("/cart")
 def cart():
+    logged_in = user.is_logged_in(session)
+    drinks = []
+    if logged_in:
+        drinks = db.get_cart(user.get_userid(db, session))
     categories = db.get_all_categories()
-    return drinkshtml.generate_warenkorb(user.is_logged_in(session))
+    return drinkshtml.generate_warenkorb(logged_in, drinks, categories)
 
 @app.route("/search")
 def search():
+    logged_in = user.is_logged_in(session)
     categories = db.get_all_categories()
-    return drinkshtml.generate_searchpage(user.is_logged_in(session), searchterm, drinks, categories)
+    drinks = db.get_drinks_search(searchterm)
+    return drinkshtml.generate_searchpage(logged_in, drinks, categories, False, searchterm=term)
 
 @app.route("/test")
 def test():
-    db.begin()
-    out = str(db.is_password_correct("test2","test"))
-    db.commit()
-    return out
+    a = drinksdatabase.Category(2, "lel", "lol")
+    return drinkshtml.navigation([a,])
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
@@ -71,5 +81,5 @@ if __name__ == "__main__":
         if sys.argv[1] == "True":
             db = drinksdatabase.Database(app, True)
     if db == None:
-        db = drinksdatabase.Database(app)
+        db = drinksdatabase.Database(app, False, user="root", password="ef21")
     app.run(host="0.0.0.0", port=8080)

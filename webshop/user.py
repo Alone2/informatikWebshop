@@ -1,5 +1,8 @@
 import drinksdatabase
 
+def logout(session):
+    session.pop("userid", None)
+
 def login(username, password, session, db):
     userid = db.is_password_correct(username, password)
     if userid != -1:

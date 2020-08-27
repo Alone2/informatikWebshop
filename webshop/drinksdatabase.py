@@ -1,11 +1,11 @@
 from flask_mysqldb import MySQL
 
 class Database:
-    def __init__(self, flaskApp, isDocker = False):
+    def __init__(self, flaskApp, isDocker = False, user = "root", password = "1234"):
         self.mysql = MySQL(flaskApp)
         self.can_run = False
-        flaskApp.config['MYSQL_USER'] = 'root'
-        flaskApp.config['MYSQL_PASSWORD'] = '1234'
+        flaskApp.config['MYSQL_USER'] = user
+        flaskApp.config['MYSQL_PASSWORD'] = password
         flaskApp.config['MYSQL_DB'] = 'WebshopEasy'
         if isDocker:
             flaskApp.config['MYSQL_HOST'] = 'db'
@@ -167,14 +167,16 @@ class Database:
 
     # returns orders
     def get_cart(self, userid):
-        if not self.can_run:
-            raise Exception("Start Database with .begin()")
         return self.__get_orders(userid, True)
+    
+    def add_to_cart(self, userid, drink):
+        pass
+
+    def add_to_orders(self, userid, drink):
+        pass
 
     # returns orders
     def get_finished_orders(self, userid):
-        if not self.can_run:
-            raise Exception("Start Database with .begin()")
         return self.__get_orders(userid, False)
 
 class Drink:
