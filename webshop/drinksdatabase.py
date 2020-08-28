@@ -2,7 +2,6 @@ from flask_mysqldb import MySQL
 
 class Database:
     def __init__(self, flaskApp, isDocker = False, user = "root", password = "1234"):
-        self.mysql = MySQL(flaskApp)
         self.can_run = False
         flaskApp.config['MYSQL_USER'] = user
         flaskApp.config['MYSQL_PASSWORD'] = password
@@ -11,6 +10,12 @@ class Database:
             flaskApp.config['MYSQL_HOST'] = 'db'
         else:
             flaskApp.config['MYSQL_HOST'] = 'localhost'
+        self.mysql = MySQL(flaskApp)
+    
+    def can_connect(self):
+        if self.mysql.connection == None:
+            return False
+        return True
 
     def begin(self):
         self.mysql.connection.begin()
@@ -32,9 +37,8 @@ class Database:
         drinks = []
         out = cursor.fetchall()
         for k in out:
-            images = self.__get_images(k[0])
             categories = self.__get_drinks_category(k[0])
-            drinks.append(Drink(k[0],k[1],k[2],k[3],k[4],k[5],images,categories))
+            drinks.append(Drink(k[0],k[1],k[2],k[3],k[4],k[5],categories))
         return drinks
 
 
@@ -47,7 +51,7 @@ class Database:
         out = cursor.fetchall()
         drinks = []
         for k in out:
-            drinks.append(self.__get_drink(out[0][0]))
+            drinks.append(self.get_drink(out[0][0]))
         return drinks
 
     # returns User Id, or -1
@@ -97,13 +101,13 @@ class Database:
         cursor.execute(sql, (password,user))
 
     # returns list of categories 
-    def get_all_categories(self, user, password):
+    def get_all_categories(self):
         cursor = self.mysql.connection.cursor()
         cursor.execute("SELECT name, description, id from category")
         catergories = []
         out = cursor.fetchall()
         for k in out:
-            catergories.append(Category(out[2],out[0], out[1]))
+            catergories.append(Category(k[2], k[0], k[1]))
         return catergories
     
     # returns list of categories 
@@ -114,11 +118,11 @@ class Database:
         out = cursor.fetchall()
         categories = []
         for k in out:
-            categories.append(self.__get_category(k[0]))
+            categories.append(self.get_category(k[0]))
         return categories
     
     # returns category
-    def __get_category(self, categoryid):
+    def get_category(self, categoryid):
         cursor = self.mysql.connection.cursor()
         sql = "SELECT name, description from category where id=%s"
         cursor.execute(sql, (categoryid,))
@@ -126,20 +130,19 @@ class Database:
         return Category(categoryid, out[0][0],out[0][1])
 
     # returns drink
-    def __get_drink(self, drinkid):
+    def get_drink(self, drinkid):
         cursor = self.mysql.connection.cursor()
-        cursor.execute("SELECT id, name, description, price, alkoholAmount, volume from item where id=%s")
+        sql = "SELECT id, name, description, price, alkoholAmount, volume from item where id=%s"
         cursor.execute(sql, (drinkid,))
         out = cursor.fetchall()
-        images = self.__get_images(out[0][0])
         categories = self.__get_categories_of_drink(out[0][0])
-        return Drink(out[0][0], out[0][1], out[0][2],out[0][3], out[0][4], out[0][5], images, categories)
+        return Drink(out[0][0], out[0][1], out[0][2],out[0][3], out[0][4], out[0][5], categories)
 
     # returns list of images (bin)
-    def __get_images(self, drinkid): 
+    def get_images(self, drink): 
         cursor = self.mysql.connection.cursor()
         sql = "SELECT png from image where id=%s"
-        cursor.execute(sql, (drinkid,))
+        cursor.execute(sql, (drink.id,))
         out = cursor.fetchall()
         images = []
         for k in out:
@@ -147,62 +150,124 @@ class Database:
         return images
 
     # returns orders
-    def __get_orders(self, userid, is_cart):
+    def __get_orders(self, userid):
         cursor = self.mysql.connection.cursor()
-        sql = "SELECT id from order where userId=%s"
+        sql = "SELECT id, isPlaced from order where userId=%s"
         cursor.execute(sql, (userid,))
         out = cursor.fetchall()
-        orderId = out[0][0]
 
-        cursor = self.mysql.connection.cursor()
-        sql = "SELECT itemid, count from item2order where orderId=%s"
-        cursor.execute(sql, (orderId,))
-        out = cursor.fetchall()
-        order_items = []
+        orders = []
         for k in out:
-            drink = self.__get_drink(k[0])
-            order_items.append(Order_Item(drink,k[1]))
+            orderId = k[0]
+            is_placed = k[1]
 
-        return Order(orderId, order_items, userid)
+            cursor = self.mysql.connection.cursor()
+            sql = "SELECT itemid, count from item2order where orderId=%s"
+            cursor.execute(sql, (orderId,))
+            out2 = cursor.fetchall()
+            order_items = []
+            for o in out2:
+                drink = self.get_drink(o[0])
+                order_items.append(Order_Item(drink,o[1]))
+
+            orders.append(Order(orderId, order_items, userid, is_placed))
+        return orders
 
     # returns orders
     def get_cart(self, userid):
-        return self.__get_orders(userid, True)
-    
-    def add_to_cart(self, userid, drink):
-        pass
+        orders = self.__get_orders(userid)
+        if not orders[-1].is_placed:
+            return orders[-1]
+        raise Exception("Cart not found")
 
-    def add_to_orders(self, userid, drink):
-        pass
+    # doesn't return anything (amount kann auch negativ sein)
+    def add_to_cart(self, userid, drink, amount=1):
+        if not self.can_run:
+            raise Exception("Start Database with .begin()")
+        warenkorb = None
+        try:
+            warenkorb = self.get_cart.id
+        except:
+            warenkorb = self.__create_cart(userid)
+        self.__update_count_cart_item(warenkorb.id, drink.id, amount)
+    
+    # doesn't return anything 
+    def __update_count_cart_item(self, orderid, itemid, update_add):
+        if not self.can_run:
+            raise Exception("Start Database with .begin()")
+        cursor = self.mysql.connection.cursor()
+        sql = "SELECT count from item2order WHERE itemId = %s AND orderId = %s"
+        cursor.execute(sql, (itemid,orderid))
+        out = cursor.fetchall()
+        if len(out) == 0:
+            # item doesn't exist in item2order
+            if update_add <= 0:
+                return
+            sql = "INSERT into item2order (itemId, orderId, count) VALUES (%s, %s, %s) "
+            cursor.execute(sql, (itemid,orderid, update_add))
+        else:
+            # item exists in item2order
+            count = out[0][0]
+            if count > 0:
+                sql = "UPDATE item2order SET count = %s WHERE itemId = %s and orderId = %s"
+                cursor.execute(sql, (count + update_add, itemid, orderid))
+            else:
+                sql = "DELETE FROM item2order WHERE itemId = %s and orderId = %s"
+                cursor.execute(sql, (itemid,orderid))
+    
+    # returns nothing raises exception
+    def remove_from_cart(self, userid, drink, amount = 1):
+        return self.add_to_cart(userid, drink, -amount)
+    
+    # returns cart (order)
+    def __create_cart(self, userid):
+        if not self.can_run:
+            raise Exception("Start Database with .begin()")
+        cursor = self.mysql.connection.cursor()
+        sql = "INSERT into order (userId, isPlaced) VALUES (%s, %s) "
+        cursor.execute(sql, (userid, False))
+    
+    # returns nothing
+    def buy_cart(self, userid):
+        if not self.can_run:
+            raise Exception("Start Database with .begin()")
+        cart = self.get_cart(userid)
+        cursor = self.mysql.connection.cursor()
+        sql = "UPDATE order SET isPlaced = %s WHERE id = %s "
+        cursor.execute(sql, (True, cart.id))
+        self.__create_cart()
 
     # returns orders
     def get_finished_orders(self, userid):
-        return self.__get_orders(userid, False)
+        orders = self.__get_orders(userid)
+        if orders[-1].is_placed:
+            return orders
+        return orders[:-1]
 
 class Drink:
-    def __init__(self, id, name, description, price, alcohol, volume, imagesbin, categories):
-        self.name = name
-        self.description = description
-        self.price = price
-        self.alcohol = alcohol
-        self.volume = volume
-        self.imagesbin = imagesbin
+    def __init__(self, myid, name, description, price, alcohol, volume, categories):
+        self.id = int(myid)
+        self.name = str(name)
+        self.description = str(description)
+        self.price = float(price)
+        self.alcohol = float(alcohol)
+        self.volume = float(volume)
         self.categories = categories
 
 class Category():
     def __init__(self, myid, name, description):
-        self.id = myid
-        self.name = name
-        self.description = description
-
+        self.id = int(myid)
+        self.name = str(name)
+        self.description = str(description)
 
 class Order_Item():
     def __init__(self, item, count):
-        self.amount = count
+        self.amount = int(count)
         self.drink = item
 
 class Order():
-    def __init__(self, order_id, order_item_list, user_id):
-        self.id = order_id
-        self.user_id = user_id
+    def __init__(self, order_id, order_item_list, user_id, is_placed):
+        self.id = int(order_id)
+        self.user_id = int(user_id)
         self.order_item_list = order_item_list
+        self.is_placed = bool(is_placed)
