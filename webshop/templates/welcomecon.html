@@ -1,11 +1,5 @@
-<head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="welcomecon.css"  />
+<link rel="stylesheet" href=" {{ url_for('static', filename='welcomecon.css') }}" />
 
-</head>
-
-<body>
-<div id ="text">{%autoescape false%} {{ Welcome back}} {{ Please login}}  {%endautoescape%}</div>
-<div> <!--Itemcards -->{%autoescape false%}  {{ itemcard }}  {%endautoescape%} </div>
-
-</body>
+<div id="text">{%autoescape false%} {{ Welcome back}} {{ Please login}} {%endautoescape%}</div>
+<div>
+    <!--Itemcards -->{%autoescape false%} {{ itemcard }} {%endautoescape%} </div>

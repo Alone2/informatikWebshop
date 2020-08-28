@@ -1,18 +1,7 @@
-<head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="navigationsleiste.css"  />
-
-</head>
-
-
-<body>
-        <div id="Sbar">
-               <form>
-                <input type="text" name="Search" />
-                  <input type="submit" name="eingabe" value="Suchen" />
-                </form>
-              
-          
-             
-</body>
-
+<link rel="stylesheet" href=" {{ url_for('static', filename='Sbar.css') }}" />
+<div id="Sbar">
+    <form>
+        <input type="text" name="Search" />
+        <input type="submit" name="eingabe" value="Suchen" />
+    </form>
+</div>

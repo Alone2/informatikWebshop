@@ -1,11 +1,5 @@
-<head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="Search.css"  />
+<link rel="stylesheet" href=" {{ url_for('static', filename='Search.css') }}" />
 
-</head>
-
-<body>
-<div id ="text">Search results</div>
-<div> <!--Itemcards -->{%autoescape false%}  {{ itemcard }}  {%endautoescape%} </div>
-
-</body>
+<div id="text">Search results</div>
+<div>
+    <!--Itemcards -->{%autoescape false%} {{ itemcard }} {%endautoescape%} </div>

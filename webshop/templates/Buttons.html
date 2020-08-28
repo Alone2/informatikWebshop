@@ -1,19 +1,13 @@
-<head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="Buttons.css"  />
+<link rel="stylesheet" href=" {{ url_for('static', filename='Button.css') }}" />
 
-</head>
+<div id="Sbar">
+    <form>
+        <button class="test">
+            Warenkorb
+        </button>
+        <button class="test">
+            Login/Sign up
+        </button>
 
-
-<body>
-        <div id="Sbar">
-               <form>
-                  <button class = "test">
-                      Warenkorb
-                  </button>
-                  <button class = "test">
-                      Login/Sign up
-                  </button>
-                  
-                </form>
-            </body>
+    </form>
+</div>

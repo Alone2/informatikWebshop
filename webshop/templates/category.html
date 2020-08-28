@@ -1,12 +1,5 @@
-<head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="category.css"  />
+<link rel="stylesheet" href=" {{ url_for('static', filename='category.css') }}" />
 
-</head>
-
-<body>
-        <div id="category">
-               <p>{{ name }}</p>
-            </div>
-</body>
-
+<div id="category">
+    <p>{{ name }}</p>
+</div>

@@ -1,14 +1,7 @@
-<head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="Itemslice.css"  />
+<link rel="stylesheet" href=" {{ url_for('static', filename='Itemslice.css') }}" />
 
-</head>
-
-<body>
-        <div id="Itemslice">
-               <p1>{{Title}}</p1>
-               <input id = "check" type="button" value ="löschen">
-               <p2 id ="preis">Preis: {{Preis}}</p2>
-               
-               
-</body>
+<div id="Itemslice">
+    <p1>{{Title}}</p1>
+    <input id="check" type="button" value="löschen">
+    <p2 id="preis">Preis: {{Preis}}</p2>
+</div>

@@ -1,15 +1,8 @@
-<head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" href="navigationsleiste.css"  />
+<link rel="stylesheet" href=" {{ url_for('static', filename='navigationsleiste.css') }}" />
 
-</head>
-
-<body>
-        <div id="Navigation">
-               <h1>Navigation</h1>
-                {% autoescape false %} 
-                {{ category }} 
-                {% endautoescape %}
-            </div>
-</body>
-
+<div id="Navigation">
+    <h1>Navigation</h1>
+    {% autoescape false %}
+    {{ category }}
+    {% endautoescape %}
+</div>
