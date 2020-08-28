@@ -1,6 +1,5 @@
 <link rel="stylesheet" href=" {{ url_for('static', filename='Tleiste.css') }}" />
 
 <div id="Logo">
-    <img src=logo.png>
-    {%autoescape false%} {{ SBar }} {{ Buttons }} {%endautoescape%}
+    <img src="{{ url_for('static', filename='logo.png') }}" /> {%autoescape false%} {{ SBar }} {{ Buttons }} {%endautoescape%}
 </div>

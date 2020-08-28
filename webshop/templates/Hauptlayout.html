@@ -1,13 +1,17 @@
 <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href=" {{ url_for('static', filename='Hauptlayout.css') }}"  />
+    <link rel="stylesheet" href=" {{ url_for('static', filename='Hauptlayout.css') }}" />
 
 </head>
 
-<body>
-        <div id="header">{%autoescape false%} {{ header }} {%endautoescape%} </div>
-            <div id="SBar">{%autoescape false%} {{ SBar }} {%endautoescape%}</div>
-                <div id="content">{%autoescape false%} {{ content }} {%endautoescape%}</div>
+<body id="Hauptlayout">
+    <div id="header">
+        {%autoescape false%} {{ header }} {%endautoescape%}
+    </div>
+    <div id="SBar">
+        {%autoescape false%} {{ SBar }} {%endautoescape%}
+    </div>
+    <div id="content">
+        {%autoescape false%} {{ content }} {%endautoescape%}
+    </div>
 </body>
-
-

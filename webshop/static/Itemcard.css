@@ -1,23 +1,23 @@
-#Itemcard{
+#Itemcard {
     width: 20%;
     height: 40%;
     border: 14px;
     padding: 20px;
     border-color: beige;
-    background-color: grey;    
+    background-color: grey;
 }
-p{ 
+
+#Itemcard p {
     padding: 10px;
     font-size: 16px;
-
 }
 
-#h1{
+#Itemcard #h1 {
     padding: 10px;
     border-left-width: 25px;
 }
 
-#h2{
+#Itemcard #h2 {
     padding: 10px;
     border-left-width: 25px;
 }

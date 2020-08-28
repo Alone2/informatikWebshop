@@ -1,5 +1,6 @@
-.test{
-border: none; 
-padding: 10px; 
-text-align: center; 
-font-size: 16px; }
+#Buttons .test {
+    border: none;
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+}

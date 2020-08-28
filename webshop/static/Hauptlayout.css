@@ -1,4 +1,4 @@
-#header {
+#Hauptlayout #header {
     margin: 0px;
     width: auto;
     height: 60px;
@@ -7,15 +7,13 @@
     font-size: 30px;
 }
 
-#SBar {
+#Hauptlayout #SBar {
     float: left;
     width: 150px;
     min-height: 600px;
-
     background-color: lightgrey;
 }
 
-#content {
+#Hauptlayout #content {
     float: right;
-    
 }

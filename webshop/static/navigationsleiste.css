@@ -1,9 +1,10 @@
-#navigation{
+#navigation {
     width: 150px;
     min-height: 600px;
     background-color: white;
 }
-h1 {
+
+#navigation h1 {
     color: black;
     font-family: sans-serif;
     font-size: 18px;

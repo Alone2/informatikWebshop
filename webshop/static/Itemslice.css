@@ -1,7 +1,12 @@
-#Itemslice{
-    background-color: grey;    
+#Itemslice {
+    background-color: grey;
     padding: 10px;
 }
 
-#preis{float: right}
-#check{float: right}
+#Itemslice #preis {
+    float: right
+}
+
+#Itemslice #check {
+    float: right
+}

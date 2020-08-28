@@ -1,9 +1,11 @@
 <link rel="stylesheet" href=" {{ url_for('static', filename='Warenkorb.css') }}" />
 
-<div id="text">Ihr Warenkorb:</div>
-<div>
-    {%autoescape false%}
-    {{ itemcard }}
-    {%endautoescape%}
+<div id="Warenkorb">
+    <div id="text">Ihr Warenkorb:</div>
+    <div>
+        {%autoescape false%} {{ itemcard }} {%endautoescape%}
+    </div>
+    <div id="knopf">
+        <input type="submit" name="Wako" value="kaufen" />
+    </div>
 </div>
-<div id="knopf"> <input type="submit" name="Wako" value="kaufen" /></div>

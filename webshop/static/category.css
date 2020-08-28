@@ -1,11 +1,12 @@
-#category{
+#category {
     width: 150px;
     height: 50px;
     border: 14px;
     border-color: beige;
-    background-color: grey;    
+    background-color: grey;
 }
-p{ 
+
+#category p {
     padding: 10px;
     font-size: 25px;
     padding-left: 25px;

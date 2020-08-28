@@ -1,12 +1,11 @@
-#Logo{
+#Logo {
     width: auto;
     height: auto;
     position: static;
-  
 }
-shopcart#{
+
+#Logo #shopcart {
     width: auto;
     height: auto;
     position: absolute right;
-
 }

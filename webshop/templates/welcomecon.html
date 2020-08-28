@@ -1,5 +1,10 @@
 <link rel="stylesheet" href=" {{ url_for('static', filename='welcomecon.css') }}" />
-
-<div id="text">{%autoescape false%} {{ Welcome back}} {{ Please login}} {%endautoescape%}</div>
-<div>
-    <!--Itemcards -->{%autoescape false%} {{ itemcard }} {%endautoescape%} </div>
+<div id="welcomecon">
+    <div id="text">
+        {%autoescape false%} {{ Welcome back}} {{ Please login}} {%endautoescape%}
+    </div>
+    <div>
+        <!--Itemcards -->
+        {%autoescape false%} {{ itemcard }} {%endautoescape%}
+    </div>
+</div>
