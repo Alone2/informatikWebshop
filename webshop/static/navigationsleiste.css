@@ -1,11 +1,17 @@
 #navigation {
     width: 150px;
     min-height: 600px;
-    background-color: white;
+    background-color: lightgray;
 }
 
 #navigation h1 {
     color: black;
     font-family: sans-serif;
     font-size: 18px;
+}
+
+#navigation p {
+    font-size: 18px;
+    text-align: center;
+    padding: 11px
 }

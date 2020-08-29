@@ -7,13 +7,16 @@
     font-size: 30px;
 }
 
-#Hauptlayout #SBar {
-    float: left;
+#Hauptlayout #Sidebar {
+    /* float: left; */
+    position: fixed;
     width: 150px;
     min-height: 600px;
     background-color: lightgrey;
+    padding: 5px;
 }
 
 #Hauptlayout #content {
-    float: right;
+    margin-left: 155px;
+    padding: 0px 10px;
 }

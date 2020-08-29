@@ -18,7 +18,7 @@ def home():
     drinks = db.get_drinks_by_category(c)
     return drinkshtml.generate_homepage(logged_in, CATEGORIES, drinks)
 
-@app.route("/login", methods=["POST,GET"])
+@app.route("/login", methods=["POST","GET"])
 def login():
     failed = ""
     logged_in = user.is_logged_in(session)
@@ -105,8 +105,10 @@ def search():
 def img():
     drinkid = request.args.get("item")
     d = db.get_drink(drinkid)
-    img = random.choice(db.get_images(d))
-    return Response(d, mimetype="image/png")
+    imgs = db.get_images(d)
+    if len(imgs) <= 0:
+        return Response("", mimetype="image/png")
+    return Response(random.choice(), mimetype="image/png")
 
 @app.route("/test")
 def test():
@@ -130,4 +132,4 @@ if __name__ == "__main__":
         db = drinksdatabase.Database(app, isDocker=False, user="root", password="ef21")
     with app.app_context():
         CATEGORIES = db.get_all_categories()
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=8080, debug=True)

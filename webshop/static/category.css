@@ -4,6 +4,7 @@
     border: 14px;
     border-color: beige;
     background-color: grey;
+    cursor: pointer;
 }
 
 #category p {

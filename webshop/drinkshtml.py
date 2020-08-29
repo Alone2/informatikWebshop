@@ -28,8 +28,8 @@ def generate_searchpage(loggedin, drinks, categories, search_category = False, s
 #  LEVEL 1
 #
 
-def generate_hauptlayout(header, sbar, content):
-    return render_template("Hauptlayout.html", header= header, Sbar= sbar, content= content)
+def generate_hauptlayout(header, sidebar, content):
+    return render_template("Hauptlayout.html", header= header, Sbar= sidebar, content= content)
 
 #
 #  LEVEL 2
@@ -38,11 +38,9 @@ def generate_hauptlayout(header, sbar, content):
 def generate_navigation(categories):
     s = ""
     for k in categories:
-        s += k.name
+        s += generate_nav_category(k)
     return render_template("navigationsleiste.html", category=s)
 
-def generate_category(category):
-    return render_template("category.html", name=category.name)
 
 def generate_header(loggedin):
     searchbar = generate_header_searchbar()
@@ -56,10 +54,13 @@ def generate_welcome_content(drinks, loggedin):
     msg = "Please log in" 
     if loggedin:
         msg = "Welcome back!"
-    return render_template("Tleiste.html", welcomemessage=msg, itemcards=cards)
+    return render_template("welcomecon.html", welcomemessage=msg, itemcards=cards)
 #
 # LEVEL 3
 #
+
+def generate_nav_category(category):
+    return render_template("category.html", name=category.name, id=category.id)
 
 def generate_header_button(loggedin):
     loginTxt = "Log in / Register"

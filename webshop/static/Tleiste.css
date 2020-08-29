@@ -4,6 +4,12 @@
     position: static;
 }
 
+#Logo img {
+    width: 220;
+    height: 60;
+    float: left;
+}
+
 #Logo #shopcart {
     width: auto;
     height: auto;
