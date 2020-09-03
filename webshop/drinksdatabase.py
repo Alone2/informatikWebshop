@@ -26,18 +26,19 @@ class Database:
         self.can_run = False
     
     def revert(self):
-        self.mysql.connection.revert()
+        self.mysql.connection.rollback()
         self.can_run = False
 
     # returns list of Drinks 
     # TODO: implement search (.. where)
     def get_drinks_search(self, searchterm):
         cursor = self.mysql.connection.cursor()
-        cursor.execute("SELECT id, name, description, price, alkoholAmount, volume from item")
+        sql = "SELECT id, name, description, price, alkoholAmount, volume from item WHERE name LIKE %s OR description LIKE %s"
+        cursor.execute(sql, ("%" + searchterm + "%","%" + searchterm + "%"))
         drinks = []
         out = cursor.fetchall()
         for k in out:
-            categories = self.__get_drinks_category(k[0])
+            categories = self.__get_categories_of_drink(k[0])
             drinks.append(Drink(k[0],k[1],k[2],k[3],k[4],k[5],categories))
         return drinks
 
@@ -152,7 +153,7 @@ class Database:
     # returns orders
     def __get_orders(self, userid):
         cursor = self.mysql.connection.cursor()
-        sql = "SELECT id, isPlaced from order where userId=%s"
+        sql = "SELECT id, isPlaced from itemorder where userId=%s"
         cursor.execute(sql, (userid,))
         out = cursor.fetchall()
 
@@ -186,7 +187,7 @@ class Database:
             raise Exception("Start Database with .begin()")
         warenkorb = None
         try:
-            warenkorb = self.get_cart.id
+            warenkorb = self.get_cart(userid)
         except:
             warenkorb = self.__create_cart(userid)
         self.__update_count_cart_item(warenkorb.id, drink.id, amount)
@@ -204,11 +205,11 @@ class Database:
             if update_add <= 0:
                 return
             sql = "INSERT into item2order (itemId, orderId, count) VALUES (%s, %s, %s) "
-            cursor.execute(sql, (itemid,orderid, update_add))
+            cursor.execute(sql, (itemid, orderid, update_add))
         else:
             # item exists in item2order
             count = out[0][0]
-            if count > 0:
+            if count > 1:
                 sql = "UPDATE item2order SET count = %s WHERE itemId = %s and orderId = %s"
                 cursor.execute(sql, (count + update_add, itemid, orderid))
             else:
@@ -224,8 +225,9 @@ class Database:
         if not self.can_run:
             raise Exception("Start Database with .begin()")
         cursor = self.mysql.connection.cursor()
-        sql = "INSERT into order (userId, isPlaced) VALUES (%s, %s) "
+        sql = "INSERT into itemorder (userId, isPlaced) VALUES (%s, %s) "
         cursor.execute(sql, (userid, False))
+        return self.get_cart(userid)
     
     # returns nothing
     def buy_cart(self, userid):
@@ -233,9 +235,9 @@ class Database:
             raise Exception("Start Database with .begin()")
         cart = self.get_cart(userid)
         cursor = self.mysql.connection.cursor()
-        sql = "UPDATE order SET isPlaced = %s WHERE id = %s "
+        sql = "UPDATE itemorder SET isPlaced = %s WHERE id = %s "
         cursor.execute(sql, (True, cart.id))
-        self.__create_cart()
+        self.__create_cart(userid)
 
     # returns orders
     def get_finished_orders(self, userid):

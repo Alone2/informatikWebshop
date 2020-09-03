@@ -3,7 +3,8 @@
     <img src="{{Bild}}" width=220px height=100px>
     <p>{{Text}} </p>
     <p2>Preis: {{Preis}}</p2>
-    <form>
+    <form method="post" action="/add_to_cart">
+        <input type="hidden" name="item" value="{{itemId}}">
         <input type="submit" name="Wako" value="Zu Warenkorb hinzufügen" />
     </form>
 </div>

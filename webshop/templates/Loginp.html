@@ -1,16 +1,16 @@
 <div id="Loginp">
     <h1> Login In</h1>
-    <form>
+    <form action="/login" method="post">
         <div class="formline">
             <label>Username</label> <br>
             <input type="text" name="username" />
         </div>
         <div class="formline">
             <label>Password</label> <br>
-            <input type="text" name="password" />
+            <input type="password" name="password" />
         </div>
         <br>
-        <input class="button" type="button" name="switch" value="Register" />
+        <input class="button" type="button" name="switch" value="Register" onclick="location.href='/register'" />
         <input class="button" type="submit" name="eingabe" value="Absenden" />
     </form>
 </div>

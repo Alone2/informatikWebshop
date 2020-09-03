@@ -1,6 +1,9 @@
 <div id="Itemslice">
     <p1>{{Title}}</p1>
-    <p1>{{Amount}}</p1>
-    <input id="check" type="button" value="löschen">
+    <p1>({{Amount}} Stück)</p1>
+    <form class="check" method="POST" action="/remove_from_cart">
+        <input type="hidden" name="item" value="{{itemId}}">
+        <input class="check" type="submit" value="löschen">
+    </form>
     <p2 id="preis">Preis: {{Preis}}</p2>
 </div>

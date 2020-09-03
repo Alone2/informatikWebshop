@@ -1,7 +1,12 @@
-#register .button {
+#Register .button {
     border: none;
     padding: 10px;
     text-align: center;
     font-size: 16px;
     border: 20px;
+}
+
+#Register {
+    margin: auto;
+    width: 30%;
 }

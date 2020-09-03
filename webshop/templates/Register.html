@@ -1,19 +1,19 @@
 <div id="Register">
-    <h1> Login In</h1>
-    <form>
+    <h1>Register</h1>
+    <form action="/register" method="post">
         <div class="formline">
             <label>Username</label> <br>
             <input type="text" name="username" />
         </div>
         <div class="formline">
             <label>Password</label> <br>
-            <input type="text" name="password" />
+            <input type="password" name="password" />
         </div>
         <div class="formline">
             <label>Password bestätigen</label> <br>
-            <input type="text" name="password2" />
+            <input type="password" name="password2" />
         </div>
-        <input class="button" type="button" name="switch2" value="Login" />
+        <input class="button" type="button" name="switch2" value="Login" onclick="location.href='/login'" />
         <input class="button" type="submit" name="eingabe" value="Absenden" />
     </form>
 </div>

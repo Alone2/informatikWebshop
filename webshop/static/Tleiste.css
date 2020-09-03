@@ -8,6 +8,7 @@
     width: 220;
     height: 60;
     float: left;
+    cursor: pointer;
 }
 
 #Logo #shopcart {

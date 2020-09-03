@@ -3,7 +3,10 @@
     <div>
         {%autoescape false%} {{ itemcard }} {%endautoescape%}
     </div>
+    <br />
     <div id="knopf">
-        <input type="submit" name="Wako" value="kaufen" />
+        <form method="post" action="/buy_cart">
+            <input type="submit" name="Wako" value="kaufen" />
+        </form>
     </div>
 </div>
