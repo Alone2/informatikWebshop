@@ -92,9 +92,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `WebshopEasy`.`order`
+-- Table `WebshopEasy`.`itemorder`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `WebshopEasy`.`order` (
+CREATE TABLE IF NOT EXISTS `WebshopEasy`.`itemorder` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `userId` INT NOT NULL,
   `isPlaced` TINYINT(1) NULL,
@@ -113,13 +113,13 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `WebshopEasy`.`item2order` (
   `itemId` INT NOT NULL,
-  `oderId` INT NOT NULL,
+  `orderId` INT NOT NULL,
   `count` INT NULL,
-  PRIMARY KEY (`itemId`, `oderId`),
-  INDEX `orderID_idx` (`oderId` ASC) VISIBLE,
+  PRIMARY KEY (`itemId`, `orderId`),
+  INDEX `orderID_idx` (`orderId` ASC) VISIBLE,
   CONSTRAINT `orderId_i2o`
-    FOREIGN KEY (`oderId`)
-    REFERENCES `WebshopEasy`.`order` (`id`)
+    FOREIGN KEY (`orderId`)
+    REFERENCES `WebshopEasy`.`itemorder` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `itemId_i2o`
@@ -129,6 +129,7 @@ CREATE TABLE IF NOT EXISTS `WebshopEasy`.`item2order` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+INSERT INTO `WebshopEasy`.`category` (`description`, `name`) VALUES ('Beliebte Produkte', 'Beliebt');
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
