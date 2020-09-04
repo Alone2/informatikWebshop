@@ -65,6 +65,9 @@ def logout():
 @app.route("/add_to_cart", methods=["POST"])
 def add_to_cart():
     userid = user.get_userid(db, session)
+    logged_in = user.is_logged_in(session)
+    if not logged_in:
+        return redirect("/login")
     item = request.form["item"]
     drink = db.get_drink(item)
     db.begin()
@@ -97,8 +100,6 @@ def buy_cart():
         db.buy_cart(userid)
         db.commit()
     except Exception as e:
-        print(e, flush=True)
-        print("lel", flush=True)
         db.revert()
     return redirect("/")
 
@@ -109,7 +110,7 @@ def cart():
     if logged_in:
         order_warenkorb = db.get_cart(user.get_userid(db, session))
         return drinkshtml.generate_warenkorb(logged_in, order_warenkorb, CATEGORIES)
-    return redirect("/")
+    return redirect("/login")
 
 @app.route("/search", methods=["GET"])
 def search():
