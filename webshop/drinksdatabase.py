@@ -52,7 +52,7 @@ class Database:
         out = cursor.fetchall()
         drinks = []
         for k in out:
-            drinks.append(self.get_drink(out[0][0]))
+            drinks.append(self.get_drink(k[0]))
         return drinks
 
     # returns User Id, or -1

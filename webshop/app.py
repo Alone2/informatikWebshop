@@ -64,10 +64,10 @@ def logout():
         
 @app.route("/add_to_cart", methods=["POST"])
 def add_to_cart():
-    userid = user.get_userid(db, session)
     logged_in = user.is_logged_in(session)
     if not logged_in:
         return redirect("/login")
+    userid = user.get_userid(db, session)
     item = request.form["item"]
     drink = db.get_drink(item)
     db.begin()
